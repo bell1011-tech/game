@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fff3b8">
 <title>Our Little Game 💛</title>
 
 <style>
@@ -15,7 +16,6 @@
     --pink: #ffdce8;
     --dark-pink: #f5a9c5;
     --brown: #76594d;
-    --white: #ffffff;
 }
 
 * {
@@ -34,7 +34,8 @@ body {
 button {
     font-family: inherit;
     cursor: pointer;
-    border: none;
+    border: 3px solid white;
+    border-radius: 20px;
     color: var(--brown);
     font-weight: 800;
     transition: transform .2s, box-shadow .2s;
@@ -42,12 +43,10 @@ button {
 
 button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 7px 0 #e9b5c5;
 }
 
 button:active {
     transform: translateY(2px);
-    box-shadow: 0 2px 0 #e9b5c5;
 }
 
 .screen {
@@ -63,6 +62,60 @@ button:active {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+#characterScreen.active {
+    justify-content: flex-start;
+    padding-top: 0;
+}
+
+/* BACK ARROW ONLY - NO YELLOW BAR */
+
+.character-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    align-self: flex-start;
+    width: 100%;
+    margin: 0 0 12px;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.back-arrow {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid white;
+    border-radius: 50%;
+    background: #ffdce8;
+    box-shadow: 0 4px 0 #e9b5c5;
+    font-size: 30px;
+    line-height: 1;
+}
+
+.back-arrow:hover {
+    transform: scale(1.06);
+}
+
+.back-arrow:active {
+    transform: scale(.95);
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 950px;
+    text-align: center;
 }
 
 .decor {
@@ -97,40 +150,43 @@ button:active {
     font-size: 40px;
 }
 
-.content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 950px;
-    text-align: center;
+.panel {
+    background: rgba(255,255,255,.82);
+    border: 4px solid white;
+    border-radius: 30px;
+    padding: clamp(18px, 4vw, 35px);
+    box-shadow: 0 8px 0 #edc6a0, 0 12px 25px #dbaeb744;
 }
 
-/* LOADING SCREEN */
+.game-title {
+    font-size: clamp(35px, 8vw, 68px);
+    font-weight: 800;
+    color: #d783a4;
+    line-height: 1.05;
+    text-shadow: 3px 4px 0 white;
+    margin: 0 0 12px;
+}
+
+.subtitle {
+    font-size: 19px;
+    margin: 0 0 24px;
+}
+
+/* OPENING SCREEN */
 
 #loadingScreen {
     background: linear-gradient(145deg, #fff3ae, #ffe4ed);
-}
-
-.loading-title {
-    font-size: clamp(35px, 8vw, 65px);
-    line-height: 1.05;
-    color: #d783a4;
-    text-shadow: 3px 4px 0 white;
-    margin: 0 0 12px;
-    font-weight: 800;
-}
-
-.loading-subtitle {
-    font-size: 19px;
-    margin-bottom: 24px;
+    overflow: hidden;
 }
 
 .loading-character {
+    display: block;
     width: 190px;
     height: 190px;
     object-fit: contain;
+    object-position: center;
     margin: 8px auto 18px;
-    animation: float 2s ease-in-out infinite;
+    animation: characterFloat 2.2s ease-in-out infinite;
 }
 
 .loading-bar-outer {
@@ -165,28 +221,55 @@ button:active {
     color: #a87883;
 }
 
-/* TITLES AND PANELS */
+/* FLOATING OPENING DECORATIONS */
 
-.game-title {
-    font-size: clamp(36px, 8vw, 68px);
-    font-weight: 800;
-    color: #d783a4;
-    line-height: 1.05;
-    text-shadow: 3px 4px 0 white;
-    margin: 0 0 8px;
+.opening-sparkles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
 }
 
-.subtitle {
-    font-size: 18px;
-    margin: 0 0 24px;
+.opening-sparkle {
+    position: absolute;
+    font-size: 25px;
+    opacity: .7;
+    animation: sparkleFloat 3s ease-in-out infinite;
 }
 
-.panel {
-    background: rgba(255,255,255,.78);
-    border: 4px solid white;
-    border-radius: 30px;
-    padding: clamp(18px, 4vw, 35px);
-    box-shadow: 0 8px 0 #edc6a0, 0 12px 25px #dbaeb744;
+.opening-sparkle:nth-child(1) {
+    top: 18%;
+    left: 17%;
+}
+
+.opening-sparkle:nth-child(2) {
+    top: 32%;
+    right: 16%;
+    animation-delay: .7s;
+}
+
+.opening-sparkle:nth-child(3) {
+    bottom: 25%;
+    left: 23%;
+    animation-delay: 1.2s;
+}
+
+.opening-sparkle:nth-child(4) {
+    bottom: 20%;
+    right: 22%;
+    animation-delay: .4s;
+}
+
+@keyframes sparkleFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(-8deg) scale(.9);
+        opacity: .45;
+    }
+    50% {
+        transform: translateY(-13px) rotate(8deg) scale(1.15);
+        opacity: 1;
+    }
 }
 
 /* MAIN MENU */
@@ -202,9 +285,7 @@ button:active {
 .menu-button {
     width: 100%;
     padding: 12px 20px;
-    border-radius: 20px;
     background: #ffe2ec;
-    border: 3px solid white;
     box-shadow: 0 6px 0 #e9b5c5;
     font-size: 22px;
 }
@@ -241,11 +322,11 @@ button:active {
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
     width: 100%;
-    max-width: 750px;
-    margin: 0 auto 25px;
+    max-width: 850px;
+    margin: 0 auto 20px;
 }
 
 .character-card {
@@ -257,10 +338,10 @@ button:active {
     justify-content: space-between;
     background: #fff9df;
     border: 3px solid white;
-    border-radius: 22px;
-    padding: 10px;
+    border-radius: 18px;
+    padding: 7px;
     min-width: 0;
-    min-height: 210px;
+    min-height: 150px;
     box-shadow: 0 5px 0 #efd3a0;
     transition: transform .2s, border-color .2s, background .2s;
 }
@@ -278,36 +359,60 @@ button:active {
 .character-card img {
     display: block;
     width: 100%;
-    max-width: 170px;
-    height: 155px;
+    max-width: 130px;
+    height: 110px;
     object-fit: contain;
     object-position: center bottom;
     background: transparent;
     image-rendering: auto;
+    animation: characterFloat 2.8s ease-in-out infinite;
+}
+
+.character-card:nth-child(3n) img {
+    animation-delay: .4s;
+}
+
+.character-card:nth-child(3n + 1) img {
+    animation-delay: .8s;
 }
 
 .character-name {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 800;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 .selected-check {
     display: none;
     position: absolute;
-    top: 7px;
-    right: 9px;
-    width: 27px;
-    height: 27px;
+    top: 5px;
+    right: 5px;
+    width: 23px;
+    height: 23px;
     background: #f5a9c5;
     color: white;
     border-radius: 50%;
-    font-size: 18px;
-    line-height: 27px;
+    font-size: 16px;
+    line-height: 23px;
+    z-index: 2;
 }
 
 .character-card.selected .selected-check {
     display: block;
+}
+
+.character-card.selected img {
+    animation: selectedBounce .65s ease-in-out infinite alternate;
+}
+
+.character-card.selected::after {
+    content: "✨";
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    font-size: 19px;
+    pointer-events: none;
+    animation: sparkle 1s ease-in-out infinite alternate;
 }
 
 .selected-label {
@@ -328,9 +433,7 @@ button:active {
 .action-button {
     min-width: 135px;
     padding: 11px 22px;
-    border-radius: 18px;
     background: #ffe2ec;
-    border: 3px solid white;
     box-shadow: 0 5px 0 #e9b5c5;
     font-size: 19px;
 }
@@ -340,7 +443,7 @@ button:active {
     box-shadow: 0 5px 0 #e8d18b;
 }
 
-/* PLACEHOLDER SCREENS */
+/* OTHER SCREENS */
 
 .placeholder-panel {
     width: min(500px, 100%);
@@ -357,27 +460,88 @@ button:active {
     margin: 10px 0 22px;
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+.image-missing {
+    font-size: 12px;
+    color: #c67f9a;
+    padding: 25px 4px;
+    overflow-wrap: anywhere;
 }
+
+/* ANIMATION KEYFRAMES */
+
+@keyframes characterFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes selectedBounce {
+    from {
+        transform: translateY(0) scale(1);
+    }
+    to {
+        transform: translateY(-9px) scale(1.04);
+    }
+}
+
+@keyframes sparkle {
+    from {
+        transform: scale(.8) rotate(-10deg);
+        opacity: .55;
+    }
+    to {
+        transform: scale(1.2) rotate(10deg);
+        opacity: 1;
+    }
+}
+
+/* MOBILE RESPONSIVENESS */
 
 @media (max-width: 600px) {
     .screen {
         padding: 18px 12px;
     }
 
+    #characterScreen.active {
+        padding-top: 0;
+    }
+
+    .character-topbar {
+        width: 100%;
+        margin: 0 0 12px;
+        padding: 10px 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+
+    .back-arrow {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        font-size: 28px;
+    }
+
     .character-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
     }
 
     .character-card {
-        min-height: 195px;
+        min-height: 125px;
+        padding: 5px;
+        border-radius: 15px;
     }
 
     .character-card img {
-        height: 140px;
+        height: 85px;
+    }
+
+    .character-name {
+        font-size: 12px;
     }
 
     .panel {
@@ -388,15 +552,45 @@ button:active {
     .section-description {
         font-size: 16px;
     }
+
+    .action-button {
+        min-width: 120px;
+        padding: 10px 14px;
+        font-size: 17px;
+    }
+
+    .loading-character {
+        width: 160px;
+        height: 160px;
+    }
 }
 
 @media (max-width: 350px) {
+    .character-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .character-card img {
-        height: 115px;
+        height: 100px;
     }
 
     .character-name {
-        font-size: 15px;
+        font-size: 14px;
+    }
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+    .loading-character,
+    .character-card img,
+    .opening-sparkle,
+    .character-card.selected::after {
+        animation: none !important;
+    }
+
+    button {
+        transition: none;
     }
 }
 </style>
@@ -409,16 +603,24 @@ button:active {
 <div class="decor three">☁️</div>
 <div class="decor four">✨</div>
 
-<!-- LOADING SCREEN -->
-<section id="loadingScreen" class="screen active">
-    <div class="content">
-        <h1 class="loading-title">OUR LITTLE GAME</h1>
-        <p class="loading-subtitle">A tiny world made just for us ♡</p>
+<!-- OPENING / LOADING SCREEN -->
 
-        <!-- Optional loading character image -->
+<section id="loadingScreen" class="screen active">
+
+    <div class="opening-sparkles" aria-hidden="true">
+        <span class="opening-sparkle">♡</span>
+        <span class="opening-sparkle">✨</span>
+        <span class="opening-sparkle">⭐</span>
+        <span class="opening-sparkle">♡</span>
+    </div>
+
+    <div class="content">
+        <h1 class="game-title">OUR LITTLE GAME</h1>
+        <p class="subtitle">A tiny world made just for us ♡</p>
+
         <img
             class="loading-character"
-            src="characters/character1.png"
+            src="https://bell1011-tech.github.io/game/characters/character1.png"
             alt="Our game character"
             onerror="this.style.display='none'"
         >
@@ -428,6 +630,7 @@ button:active {
         </div>
 
         <div id="loadingPercent" class="loading-percent">0%</div>
+
         <div id="loadingMessage" class="loading-message">
             Preparing our little world...
         </div>
@@ -435,6 +638,7 @@ button:active {
 </section>
 
 <!-- MAIN MENU -->
+
 <section id="menuScreen" class="screen">
     <div class="content">
         <div class="panel">
@@ -467,90 +671,36 @@ button:active {
 </section>
 
 <!-- CHARACTER SELECTION -->
+
 <section id="characterScreen" class="screen">
+
+    <!-- Arrow only; transparent background -->
+
+    <div class="character-topbar">
+        <button
+            class="back-arrow"
+            type="button"
+            onclick="goTo('menuScreen')"
+            aria-label="Back to menu"
+            title="Back"
+        >←</button>
+    </div>
+
     <div class="content">
         <div class="panel">
             <h2 class="section-title">CHOOSE YOUR CHARACTER</h2>
+
             <p class="section-description">
                 Pick the little character you want to play as! ♡
             </p>
 
-            <div class="character-grid">
+            <div class="character-grid" id="characterGrid"></div>
 
-                <button class="character-card" data-character="1"
-                    onclick="selectCharacter(1)">
-                    <span class="selected-check">✓</span>
-                    <img src="./characters/character1.png"
-                        alt="Character 1"
-                        onerror="imageError(this, 1)">
-                    <span class="character-name">Character 1</span>
-                </button>
-
-                <button class="character-card" data-character="2"
-                    onclick="selectCharacter(2)">
-                    <span class="selected-check">✓</span>
-                    <img src="./characters/character2.png"
-                        alt="Character 2"
-                        onerror="imageError(this, 2)">
-                    <span class="character-name">Character 2</span>
-                </button>
-
-                <button class="character-card" data-character="3"
-                    onclick="selectCharacter(3)">
-                    <span class="selected-check">✓</span>
-                    <img src="character3.png"
-                        alt="Character 3"
-                        onerror="imageError(this, 3)">
-                    <span class="character-name">Character 3</span>
-                </button>
-
-                <button class="character-card" data-character="4"
-                    onclick="selectCharacter(4)">
-                    <span class="selected-check">✓</span>
-                    <img src="characters/character4.png"
-                        alt="Character 4"
-                        onerror="imageError(this, 4)">
-                    <span class="character-name">Character 4</span>
-                </button>
-
-                <button class="character-card" data-character="5"
-                    onclick="selectCharacter(5)">
-                    <span class="selected-check">✓</span>
-                    <img src="characters/character5.png"
-                        alt="Character 5"
-                        onerror="imageError(this, 5)">
-                    <span class="character-name">Character 5</span>
-                </button>
-
-                <button class="character-card" data-character="6"
-                    onclick="selectCharacter(6)">
-                    <span class="selected-check">✓</span>
-                    <img src="characters/character6.png"
-                        alt="Character 6"
-                        onerror="imageError(this, 6)">
-                    <span class="character-name">Character 6</span>
-                </button>
-
-                <button class="character-card" data-character="7"
-                    onclick="selectCharacter(7)">
-                    <span class="selected-check">✓</span>
-                    <img src="characters/character7.png"
-                        alt="Character 7"
-                        onerror="imageError(this, 7)">
-                    <span class="character-name">Character 7</span>
-                </button>
-
-            </div>
-
-            <div id="selectedLabel" class="selected-label">
+            <div id="selectedLabel" class="selected-label" aria-live="polite">
                 No character selected yet
             </div>
 
             <div class="action-row">
-                <button class="action-button" onclick="goTo('menuScreen')">
-                    ← BACK
-                </button>
-
                 <button class="action-button primary" onclick="startPlaying()">
                     LET'S PLAY! ♡
                 </button>
@@ -560,16 +710,21 @@ button:active {
 </section>
 
 <!-- GAME MAP -->
+
 <section id="mapScreen" class="screen">
     <div class="content">
         <div class="panel placeholder-panel">
             <h2 class="section-title">GAME MAP</h2>
+
             <div class="placeholder-icon">🗺️</div>
+
             <p class="placeholder-text">
                 Our little adventures are waiting here!
             </p>
+
             <p>Snake · Word Finder · Block Blast · Tap Match · Archery</p>
             <p>Coming soon ♡</p>
+
             <button class="action-button" onclick="goTo('menuScreen')">
                 ← BACK TO MENU
             </button>
@@ -578,15 +733,20 @@ button:active {
 </section>
 
 <!-- MEMORY ALBUM -->
+
 <section id="albumScreen" class="screen">
     <div class="content">
         <div class="panel placeholder-panel">
             <h2 class="section-title">MEMORY ALBUM</h2>
+
             <div class="placeholder-icon">📷</div>
+
             <p class="placeholder-text">
                 A little place for our favorite memories.
             </p>
+
             <p>Our memories will be added here ♡</p>
+
             <button class="action-button" onclick="goTo('menuScreen')">
                 ← BACK TO MENU
             </button>
@@ -595,15 +755,20 @@ button:active {
 </section>
 
 <!-- SETTINGS -->
+
 <section id="settingsScreen" class="screen">
     <div class="content">
         <div class="panel placeholder-panel">
             <h2 class="section-title">SETTINGS</h2>
+
             <div class="placeholder-icon">⚙️</div>
+
             <p class="placeholder-text">
                 Make yourself comfortable in our little world!
             </p>
+
             <p>More settings coming soon ♡</p>
+
             <button class="action-button" onclick="goTo('menuScreen')">
                 ← BACK TO MENU
             </button>
@@ -633,8 +798,8 @@ const loadingMessages = [
     "Preparing our little world... ♡",
     "Adding a little sprinkle of love...",
     "Gathering our happy memories...",
-    "Getting everything ready for you!",
-    "Almost there, sweetheart! ♡"
+    "Getting our characters ready!",
+    "Almost there, love! ♡"
 ];
 
 let loadingProgress = 0;
@@ -645,13 +810,15 @@ const loadingPercent = document.getElementById('loadingPercent');
 const loadingMessage = document.getElementById('loadingMessage');
 
 const loadingTimer = setInterval(() => {
-    loadingProgress += 1;
+    loadingProgress++;
 
     loadingBar.style.width = loadingProgress + '%';
     loadingPercent.textContent = loadingProgress + '%';
 
-    if (loadingProgress % 20 === 0 && messageIndex < loadingMessages.length) {
-        loadingMessage.textContent = loadingMessages[messageIndex];
+    if (loadingProgress % 20 === 0) {
+        loadingMessage.textContent =
+            loadingMessages[Math.min(messageIndex, loadingMessages.length - 1)];
+
         messageIndex++;
     }
 
@@ -664,9 +831,52 @@ const loadingTimer = setInterval(() => {
     }
 }, 35);
 
+/* CREATE 24 CHARACTER CARDS */
+
+const characterGrid = document.getElementById('characterGrid');
+
+for (let i = 1; i <= 24; i++) {
+    const card = document.createElement('button');
+
+    card.className = 'character-card';
+    card.dataset.character = i;
+    card.type = 'button';
+    card.setAttribute('aria-label', 'Select Character ' + i);
+
+    card.onclick = () => selectCharacter(i);
+
+    const check = document.createElement('span');
+    check.className = 'selected-check';
+    check.textContent = '✓';
+
+    const img = document.createElement('img');
+
+    img.src =
+        `https://bell1011-tech.github.io/game/characters/character${i}.png`;
+
+    img.alt = 'Character ' + i;
+
+    img.onerror = function () {
+        imageError(this, i);
+    };
+
+    const name = document.createElement('span');
+    name.className = 'character-name';
+    name.textContent = 'Character ' + i;
+
+    card.append(check, img, name);
+    characterGrid.appendChild(card);
+}
+
 /* CHARACTER SELECTION */
 
-let selectedCharacter = localStorage.getItem('selectedCharacter') || '';
+let selectedCharacter = '';
+
+try {
+    selectedCharacter = localStorage.getItem('selectedCharacter') || '';
+} catch (error) {
+    selectedCharacter = '';
+}
 
 function selectCharacter(characterNumber) {
     selectedCharacter = String(characterNumber);
@@ -686,29 +896,44 @@ function selectCharacter(characterNumber) {
     document.getElementById('selectedLabel').textContent =
         'Selected: Character ' + characterNumber + ' ♡';
 
-    localStorage.setItem('selectedCharacter', selectedCharacter);
+    try {
+        localStorage.setItem('selectedCharacter', selectedCharacter);
+    } catch (error) {
+        // Selection still works for the current visit.
+    }
 }
 
 /* RESTORE PREVIOUS CHARACTER */
 
-if (selectedCharacter) {
-    selectCharacter(Number(selectedCharacter));
+const savedCharacterNumber = Number(selectedCharacter);
+
+if (
+    selectedCharacter &&
+    Number.isInteger(savedCharacterNumber) &&
+    savedCharacterNumber >= 1 &&
+    savedCharacterNumber <= 24
+) {
+    selectCharacter(savedCharacterNumber);
 }
 
-/* IMAGE ERROR MESSAGE */
+/* IMAGE ERROR HANDLING */
 
 function imageError(img, characterNumber) {
-    img.alt = 'Image missing for Character ' + characterNumber;
-
     img.style.display = 'none';
 
-    const message = document.createElement('div');
-    message.textContent = 'Image not found';
-    message.style.fontSize = '14px';
-    message.style.color = '#c67f9a';
-    message.style.padding = '45px 5px';
+    const card = img.parentElement;
 
-    img.parentElement.insertBefore(message, img);
+    if (card.querySelector('.image-missing')) {
+        return;
+    }
+
+    const message = document.createElement('div');
+    message.className = 'image-missing';
+
+    message.textContent =
+        'Image not found — check character' + characterNumber + '.png';
+
+    card.insertBefore(message, img);
 }
 
 /* PLAY BUTTON */
